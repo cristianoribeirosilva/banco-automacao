@@ -1,0 +1,48 @@
+CREATE DATABASE IF NOT EXISTS banco_app;
+USE banco_app;
+
+CREATE TABLE IF NOT EXISTS clientes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nome VARCHAR(100) NOT NULL,
+  cpf VARCHAR(14) UNIQUE NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  telefone VARCHAR(20),
+  endereco VARCHAR(200),
+  senha VARCHAR(255) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS contas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT NOT NULL,
+  numero VARCHAR(20) UNIQUE NOT NULL,
+  agencia VARCHAR(10) NOT NULL DEFAULT '0001',
+  tipo ENUM('corrente', 'poupanca') NOT NULL DEFAULT 'corrente',
+  saldo DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS transacoes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  conta_origem_id INT NOT NULL,
+  conta_destino_id INT,
+  tipo ENUM('deposito', 'saque', 'transferencia', 'pix') NOT NULL,
+  valor DECIMAL(15,2) NOT NULL,
+  descricao VARCHAR(200),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (conta_origem_id) REFERENCES contas(id),
+  FOREIGN KEY (conta_destino_id) REFERENCES contas(id)
+);
+
+CREATE TABLE IF NOT EXISTS chaves_pix (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT NOT NULL,
+  chave VARCHAR(100) NOT NULL,
+  tipo ENUM('email', 'celular', 'cpf', 'aleatoria') NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON DELETE CASCADE,
+  UNIQUE KEY unique_chave (chave)
+);
