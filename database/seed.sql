@@ -1,25 +1,32 @@
 USE railway;
 
--- Clientes (senha: 12345678 para todos)
-INSERT INTO clientes (nome, cpf, email, telefone, endereco, senha) VALUES
-('João Silva', '123.456.789-09', 'joao.silva@email.com', '(11) 99999-1234', 'Rua das Flores, 123 - São Paulo, SP', '12345678'),
-('Maria Santos', '987.654.321-00', 'maria.santos@email.com', '(21) 98888-5678', 'Av. Brasil, 456 - Rio de Janeiro, RJ', '12345678'),
-('Pedro Oliveira', '456.789.123-09', 'pedro.oliveira@email.com', '(31) 97777-9012', 'Rua da Paz, 789 - Belo Horizonte, MG', '12345678');
+-- Clientes
+INSERT INTO clientes (id, nome, cpf, email, telefone, endereco, senha) VALUES
+(1, 'Maria Oliveira', '529.982.247-25', 'maria@email.com', '(11) 98765-4321', 'Rua das Flores, 100', '12345678'),
+(2, 'Carlos Santos', '347.861.500-03', 'carlos@email.com', '(21) 99876-5432', 'Av. Brasil, 200', '87654321'),
+(3, 'Ana Ferreira', '847.293.610-07', 'ana@email.com', '(31) 97654-3210', 'Rua da Paz, 300', '11223344');
 
--- Contas (saldo R$ 10.000,00 para cada)
-INSERT INTO contas (cliente_id, numero, agencia, tipo, saldo) VALUES
-(1, '0001-0001', '0001', 'corrente', 10000.00),
-(2, '0001-0002', '0001', 'corrente', 10000.00),
-(3, '0001-0003', '0001', 'corrente', 10000.00);
+-- Contas
+INSERT INTO contas (id, cliente_id, numero, agencia, tipo, saldo) VALUES
+(1, 1, '854232', '0001', 'corrente', 9999.98),
+(2, 2, '284574', '0001', 'corrente', 10000.02),
+(3, 3, '594102', '0001', 'poupanca', 10000.00);
 
--- Chaves Pix (cada cliente tem 3 chaves: email, telefone e CPF)
-INSERT INTO chaves_pix (cliente_id, chave, tipo) VALUES
-(1, 'joao.silva@email.com', 'email'),
-(1, '(11) 99999-1234', 'celular'),
-(1, '123.456.789-09', 'cpf'),
-(2, 'maria.santos@email.com', 'email'),
-(2, '(21) 98888-5678', 'celular'),
-(2, '987.654.321-00', 'cpf'),
-(3, 'pedro.oliveira@email.com', 'email'),
-(3, '(31) 97777-9012', 'celular'),
-(3, '456.789.123-09', 'cpf');
+-- Chaves Pix
+INSERT INTO chaves_pix (id, cliente_id, chave, tipo) VALUES
+(3, 1, '529.982.247-25', 'cpf'),
+(4, 1, 'maria@email.com', 'email'),
+(5, 1, '(11) 98765-4321', 'celular'),
+(7, 2, 'carlos@email.com', 'email'),
+(8, 2, '(21) 99876-5432', 'celular'),
+(9, 2, '347.861.500-03', 'cpf'),
+(10, 3, 'ana@email.com', 'email'),
+(11, 3, '(31) 97654-3210', 'celular'),
+(12, 3, '847.293.610-07', 'cpf');
+
+-- Transacoes
+INSERT INTO transacoes (id, conta_origem_id, conta_destino_id, tipo, valor, descricao) VALUES
+(1, 1, NULL, 'deposito', 10000.00, 'Deposito'),
+(2, 2, NULL, 'deposito', 10000.00, 'Deposito'),
+(3, 3, NULL, 'deposito', 10000.00, 'Deposito'),
+(4, 1, 2, 'transferencia', 0.02, 'Transferencia para conta 284574');
