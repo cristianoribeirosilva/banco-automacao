@@ -11,8 +11,8 @@ const config = {
   queueLimit: 0
 };
 
-if (process.env.DB_SSL === 'true' || process.env.MYSQLSSL === 'true') {
-  config.ssl = { rejectUnauthorized: true };
+if (process.env.MYSQLHOST || process.env.DB_HOST) {
+  config.ssl = { rejectUnauthorized: false };
 }
 
 console.log('DB config:', { host: config.host, user: config.user, database: config.database, port: config.port });

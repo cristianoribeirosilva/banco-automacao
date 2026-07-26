@@ -16,8 +16,14 @@ app.use('/api/contas', contasRouter);
 app.use('/api/transacoes', transacoesRouter);
 app.use('/api/chaves-pix', chavesPixRouter);
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+app.get('/api/health', async (req, res) => {
+  try {
+    const db = require('./db');
+    await db.query('SELECT 1');
+    res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });
+  } catch (err) {
+    res.status(503).json({ status: 'error', db: err.message, timestamp: new Date().toISOString() });
+  }
 });
 
 module.exports = app;

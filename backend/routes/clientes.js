@@ -3,13 +3,17 @@ const router = express.Router();
 const db = require('../db');
 
 router.post('/login', async (req, res) => {
+  console.log('Login attempt:', { cpf: req.body.cpf, hasSenha: !!req.body.senha });
   const { cpf, senha } = req.body;
   if (!cpf || !senha) return res.status(400).json({ error: 'CPF e senha são obrigatórios' });
   try {
+    console.log('Executing query...');
     const [rows] = await db.query('SELECT id, nome, cpf, email, telefone, endereco FROM clientes WHERE cpf = ? AND senha = ?', [cpf, senha]);
+    console.log('Query result:', rows.length, 'rows');
     if (rows.length === 0) return res.status(401).json({ error: 'Usuário/Senha inválidos' });
     res.json(rows[0]);
   } catch (err) {
+    console.error('Login error:', err);
     res.status(500).json({ error: err.message });
   }
 });
