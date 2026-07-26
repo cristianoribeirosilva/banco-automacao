@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "projects": [
+    {
+      "name": "banco-automacao-frontend",
+      "root": "frontend",
+      "installCommand": "npm install",
+      "buildCommand": "npm run build",
+      "outputDirectory": "build"
+    },
+    {
+      "name": "banco-automacao-backend",
+      "root": "backend",
+      "installCommand": "npm install",
+      "buildCommand": "echo 'No build needed'",
+      "outputDirectory": "."
+    }
+  ]
+}
