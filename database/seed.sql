@@ -3,8 +3,8 @@ USE railway;
 -- Clientes
 INSERT INTO clientes (id, nome, cpf, email, telefone, endereco, senha) VALUES
 (1, 'Maria Oliveira', '529.982.247-25', 'maria@email.com', '(11) 98765-4321', 'Rua das Flores, 100', '12345678'),
-(2, 'Carlos Santos', '347.861.500-03', 'carlos@email.com', '(21) 99876-5432', 'Av. Brasil, 200', '87654321'),
-(3, 'Ana Ferreira', '847.293.610-07', 'ana@email.com', '(31) 97654-3210', 'Rua da Paz, 300', '11223344');
+(2, 'Carlos Santos', '347.861.500-37', 'carlos@email.com', '(21) 99876-5432', 'Av. Brasil, 200', '87654321'),
+(3, 'Ana Ferreira', '847.293.610-40', 'ana@email.com', '(31) 97654-3210', 'Rua da Paz, 300', '11223344');
 
 -- Contas
 INSERT INTO contas (id, cliente_id, numero, agencia, tipo, saldo) VALUES
@@ -19,10 +19,10 @@ INSERT INTO chaves_pix (id, cliente_id, chave, tipo) VALUES
 (5, 1, '(11) 98765-4321', 'celular'),
 (7, 2, 'carlos@email.com', 'email'),
 (8, 2, '(21) 99876-5432', 'celular'),
-(9, 2, '347.861.500-03', 'cpf'),
+(9, 2, '347.861.500-37', 'cpf'),
 (10, 3, 'ana@email.com', 'email'),
 (11, 3, '(31) 97654-3210', 'celular'),
-(12, 3, '847.293.610-07', 'cpf');
+(12, 3, '847.293.610-40', 'cpf');
 
 -- Transacoes
 INSERT INTO transacoes (id, conta_origem_id, conta_destino_id, tipo, valor, descricao) VALUES
