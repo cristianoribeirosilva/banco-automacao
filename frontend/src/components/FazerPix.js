@@ -3,6 +3,20 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
+function formatarMoeda(valor) {
+  const apenasNumeros = valor.replace(/\D/g, '');
+  if (!apenasNumeros) return '';
+  const centavos = parseInt(apenasNumeros, 10);
+  const reais = (centavos / 100).toFixed(2);
+  return reais.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function parseMoeda(valorFormatado) {
+  const semPonto = valorFormatado.replace(/\./g, '');
+  const virgulaPonto = semPonto.replace(',', '.');
+  return parseFloat(virgulaPonto) || 0;
+}
+
 function FazerPix({ cliente, onVoltar }) {
   const [chave, setChave] = useState('');
   const [valor, setValor] = useState('');
@@ -13,6 +27,11 @@ function FazerPix({ cliente, onVoltar }) {
   const [buscandoChave, setBuscandoChave] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [sucesso, setSucesso] = useState(false);
+
+  const handleChangeValor = (e) => {
+    const formatado = formatarMoeda(e.target.value);
+    setValor(formatado);
+  };
 
   const mostrarMsg = (texto, tipo = 'erro') => {
     setMensagem({ texto, tipo });
@@ -50,7 +69,7 @@ function FazerPix({ cliente, onVoltar }) {
     if (chave) buscarChave();
   };
 
-  const valorNumerico = parseFloat(valor) || 0;
+  const valorNumerico = parseMoeda(valor);
   const valorValido = valorNumerico > 0;
 
   const handleTransferir = async (e) => {
@@ -106,7 +125,7 @@ function FazerPix({ cliente, onVoltar }) {
         <div className="card pix-sucesso">
           <div className="sucesso-icon">&#x2705;</div>
           <h2>Pix realizado com sucesso!</h2>
-          <p className="sucesso-valor">R$ {valorNumerico.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+          <p className="sucesso-valor">R$ {valor}</p>
           <p className="sucesso-destino">Enviado para: {chaveEncontrada?.chave}</p>
           <button className="btn btn-primary" onClick={onVoltar}>Voltar para Área Pix</button>
         </div>
@@ -148,14 +167,17 @@ function FazerPix({ cliente, onVoltar }) {
           <div className="form-group">
             <label>Valor (R$)</label>
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={valor}
-              onChange={(e) => setValor(e.target.value)}
+              onChange={handleChangeValor}
               placeholder="0,00"
-              min="0.01"
-              step="0.01"
+              maxLength={15}
               required
             />
+            {valor && valorNumerico > 0 && (
+              <span className="campo-info">R$ {valor}</span>
+            )}
           </div>
 
           <div className="form-group">

@@ -3,12 +3,30 @@ import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
 
+function formatarMoeda(valor) {
+  const apenasNumeros = valor.replace(/\D/g, '');
+  if (!apenasNumeros) return '';
+  const centavos = parseInt(apenasNumeros, 10);
+  const reais = (centavos / 100).toFixed(2);
+  return reais.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function parseMoeda(valorFormatado) {
+  const semPonto = valorFormatado.replace(/\./g, '');
+  const virgulaPonto = semPonto.replace(',', '.');
+  return parseFloat(virgulaPonto) || 0;
+}
+
 function Transferencia({ cliente }) {
   const [contas, setContas] = useState([]);
   const [contaOrigemId, setContaOrigemId] = useState('');
   const [contaDestino, setContaDestino] = useState('');
   const [valor, setValor] = useState('');
   const [mensagem, setMensagem] = useState('');
+
+  const handleChangeValor = (e) => {
+    setValor(formatarMoeda(e.target.value));
+  };
 
   useEffect(() => {
     const carregarContas = async () => {
@@ -30,7 +48,8 @@ function Transferencia({ cliente }) {
 
   const transferir = async (e) => {
     e.preventDefault();
-    if (!contaOrigemId || !contaDestino || !valor) {
+    const valorNumerico = parseMoeda(valor);
+    if (!contaOrigemId || !contaDestino || valorNumerico <= 0) {
       return mostrarMensagem('Preencha todos os campos', 'erro');
     }
     if (contaOrigemId === contaDestino) {
@@ -40,7 +59,7 @@ function Transferencia({ cliente }) {
       await axios.post(`${API_URL}/contas/transferir`, {
         conta_origem_id: parseInt(contaOrigemId),
         conta_destino_numero: contaDestino,
-        valor: parseFloat(valor)
+        valor: valorNumerico
       });
       mostrarMensagem('Transferência realizada com sucesso!');
       setContaDestino('');
@@ -76,7 +95,17 @@ function Transferencia({ cliente }) {
           </div>
           <div className="form-group">
             <label>Valor (R$)</label>
-            <input type="number" placeholder="0,00" value={valor} onChange={(e) => setValor(e.target.value)} min="0.01" step="0.01" />
+            <input
+              type="text"
+              inputMode="decimal"
+              placeholder="0,00"
+              value={valor}
+              onChange={handleChangeValor}
+              maxLength={15}
+            />
+            {valor && parseMoeda(valor) > 0 && (
+              <span className="campo-info">R$ {valor}</span>
+            )}
           </div>
           <button type="submit" className="btn btn-primary btn-full">Transferir</button>
         </form>
